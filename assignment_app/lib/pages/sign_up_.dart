@@ -1,7 +1,28 @@
 import 'package:flutter/material.dart';
 
-class SignUp extends StatelessWidget {
+final _formKey = GlobalKey<FormState>();
+
+class SignUp extends StatefulWidget {
   const SignUp({super.key});
+
+  @override
+  State<SignUp> createState() => _SignUpState();
+}
+
+class _SignUpState extends State<SignUp> {
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passController = TextEditingController();
+
+  String? validateEmail(String? email) {
+    RegExp emailRegex = RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+    final isEmailValid = emailRegex.hasMatch(email ?? '');
+    if (!isEmailValid) {
+      return 'Please enter a valid email';
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +44,7 @@ class SignUp extends StatelessWidget {
                   color: Color(0xffad5389),
                 ),
                 SizedBox(
-                  height: 30,
+                  height: 20,
                 ),
                 Text(
                   "Welcome",
@@ -51,84 +72,112 @@ class SignUp extends StatelessWidget {
                 SizedBox(
                   height: 10,
                 ),
-                TextField(
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.email,
-                        color: Color(0xffad5389),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: _nameController,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.person_2_sharp,
+                            color: Color(0xffad5389),
+                          ),
+                          hintText: 'Enter your name',
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color(0xffad5389),
+                            ),
+                          ),
+                        ),
+                        validator: (name) => name!.length < 3
+                            ? 'Name should be at least 3 characters'
+                            : null,
                       ),
-                      hintText: 'Enter your name',
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xffad5389)))),
-                ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text(
-                    "Email address",
-                    style: TextStyle(color: Colors.black45),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Text(
+                          "Email address",
+                          style: TextStyle(color: Colors.black45),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.email,
+                              color: Color(0xffad5389),
+                            ),
+                            hintText: 'example@email.com',
+                            border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Color(0xffad5389)))),
+                        validator: validateEmail,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Text(
+                          "Password",
+                          style: TextStyle(color: Colors.black45),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextFormField(
+                        controller: _passController,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.lock_clock_rounded,
+                              color: Color(0xffad5389),
+                            ),
+                            suffixIcon: Icon(
+                              Icons.remove_red_eye,
+                              color: Colors.grey,
+                            ),
+                            hintText: 'Enter Password',
+                            border: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Color(0xffad5389)))),
+                        validator: (name) => name!.length < 6
+                            ? 'Password should be at least 6 characters'
+                            : null,
+                      ),
+                    ],
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.email,
-                        color: Color(0xffad5389),
-                      ),
-                      hintText: 'example@email.com',
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xffad5389)))),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text(
-                    "Password",
-                    style: TextStyle(color: Colors.black45),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                TextField(
-                  obscureText: true,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.lock_clock_rounded,
-                        color: Color(0xffad5389),
-                      ),
-                      suffixIcon: Icon(
-                        Icons.remove_red_eye,
-                        color: Colors.grey,
-                      ),
-                      hintText: 'Enter Password',
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xffad5389)))),
                 ),
                 SizedBox(
                   height: 30,
                 ),
-                Container(
-                  height: 50,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    gradient: LinearGradient(
-                      colors: [Color(0xffad5389), Color(0xff3c1053)],
+                GestureDetector(
+                  onTap: () {
+                    _formKey.currentState!.validate();
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 150,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      gradient: LinearGradient(
+                        colors: [Color(0xffad5389), Color(0xff3c1053)],
+                      ),
                     ),
+                    child: Center(
+                        child: Text(
+                      "Sign Up",
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600),
+                    )),
                   ),
-                  child: Center(
-                      child: Text(
-                    "Sign Up",
-                    style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600),
-                  )),
                 ),
                 SizedBox(
                   height: 30,
